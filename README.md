@@ -1,3 +1,13 @@
+# Minesweeper
+
+Just a small test project including a React-based Minesweeper implementation.
+
+Play it here:
+
+https://torbenkoehn-minesweeper.vercel.app/
+
+## Usual NextJS README
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
