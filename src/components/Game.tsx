@@ -9,12 +9,14 @@ export type GameProps = {
   readonly mineCount?: number
 }
 
-const cellClasses = ['cell', 'w-10', 'h-10', 'border', 'border-slate-300', 'bg-white', 'text-black', 'text-lg', 'font-bold', 'flex', 'items-center', 'justify-center']
+const cellClasses = ['cell', 'w-10', 'h-10', 'border', 'border-slate-300', 'text-black', 'text-lg', 'font-bold', 'flex', 'items-center', 'justify-center']
 
 const getCellClasses = (cell: CellState) => {
   const conditionalClasses = [
+    [!cell.revealed, 'bg-slate-100 hover:bg-slate-200'],
+    [!cell.revealed && cell.flagged, 'bg-yellow-100 border-yellow-200'],
     [cell.revealed && !cell.mined, 'bg-slate-300 border-slate-400'],
-    [cell.revealed && cell.mined, 'bg-red-200'],
+    [cell.revealed && cell.mined, 'bg-red-200 border-red-500'],
     [cell.revealed && cell.adjacentMineCount === 1, 'text-blue-500'],
     [cell.revealed && cell.adjacentMineCount === 2, 'text-green-500'],
     [cell.revealed && cell.adjacentMineCount === 3, 'text-red-500'],
@@ -50,7 +52,7 @@ const Game = ({ width = 10, height = 10, mineCount = 10 }: GameProps) => {
   return (
     <div className='game'>
       <div className='controls'>
-        <div className='flex justify-between mb-2'>
+        <div className='flex justify-between mb-2 font-mono'>
           <div className='flex items-center mr-2'>
             <div className='mr-2'>Mines/Flags:</div>
             <div className='text-xl font-bold'>{state.mineCount}/{state.flagCount}</div>

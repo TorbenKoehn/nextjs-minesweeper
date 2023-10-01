@@ -51,6 +51,10 @@ export default function Home({ searchParams }: { searchParams: { width: string, 
         height={searchParams.height ? parseInt(searchParams.height) : 10}
         mineCount={searchParams.mineCount ? parseInt(searchParams.mineCount) : 10}
       />
+      <div className='mt-10 text-center text-xs'>
+        <div>This is a NextJS/React based Minesweeper implementation made by <a className='text-red-500 hover:text-red-400' rel='noopener noreferrer' href='https://github.com/TorbenKoehn'>Torben Köhn</a></div>
+        <div> You can find the MIT licensed source code <a className='text-red-500 hover:text-red-400' rel='noopener noreferrer' href='https://github.com/TorbenKoehn/nextjs-minesweeper'>on GitHub</a>!</div>
+      </div>
     </main>
   )
 }
