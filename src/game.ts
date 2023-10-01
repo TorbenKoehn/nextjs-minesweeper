@@ -169,26 +169,29 @@ const revealCell = (gameState: GameState, rowIndex: number, columnIndex: number)
     return gameState
   }
 
+  const flagged = cell.flagged
+
   const cells = gameState.cells
     .with(
       rowIndex,
       row.with(columnIndex, {
         ...cell,
+        flagged: false,
         revealed: true
       })
     )
 
-  if (cell.mined) {
-    return finishWithStatus({
-      ...gameState,
-      cells,
-    }, 'lost')
-  }
+  const flagCount = gameState.flagCount + (flagged ? -1 : 0)
 
   const newGameState = validateWin({
     ...gameState,
+    flagCount,
     cells,
   })
+
+  if (cell.mined) {
+    return finishWithStatus(newGameState, 'lost')
+  }
 
   if (cell.adjacentMineCount !== 0) {
     return newGameState
