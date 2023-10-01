@@ -4,7 +4,7 @@ Just a small test project including a React-based Minesweeper implementation.
 
 Play it here:
 
-https://torbenkoehn-minesweeper.vercel.app/
+https://nextjs-minesweeper.vercel.app/
 
 ## Usual NextJS README
 
