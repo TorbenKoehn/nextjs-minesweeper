@@ -27,16 +27,9 @@ export type GameOptions = {
 }
 
 const isAdjacent = (rowIndex: number, columnIndex: number, otherRowIndex: number, otherColumnIndex: number): boolean => {
-  return (
-    rowIndex === otherRowIndex - 1 && columnIndex === otherColumnIndex - 1 ||
-    rowIndex === otherRowIndex - 1 && columnIndex === otherColumnIndex ||
-    rowIndex === otherRowIndex - 1 && columnIndex === otherColumnIndex + 1 ||
-    rowIndex === otherRowIndex && columnIndex === otherColumnIndex - 1 ||
-    rowIndex === otherRowIndex && columnIndex === otherColumnIndex + 1 ||
-    rowIndex === otherRowIndex + 1 && columnIndex === otherColumnIndex - 1 ||
-    rowIndex === otherRowIndex + 1 && columnIndex === otherColumnIndex ||
-    rowIndex === otherRowIndex + 1 && columnIndex === otherColumnIndex + 1
-  )
+  const rowDiff = Math.abs(rowIndex - otherRowIndex);
+  const colDiff = Math.abs(columnIndex - otherColumnIndex);
+  return (rowDiff === 1 && colDiff <= 1) || (colDiff === 1 && rowDiff <= 1);
 }
 
 const placeMine = (gameState: GameState): GameState => {
@@ -228,6 +221,12 @@ export type RowHandle = {
   readonly rowIndex: number
 }
 
+const BUTTON_LEFT = 0;
+const BUTTON_RIGHT = 2;
+
+const areGameOptionsValid = (options: GameOptions): boolean =>
+  options.width > 0 && options.height > 0 && options.mineCount > 0
+
 export const useMinesweeperGame = () => {
   const [state, setState] = useState(() => emptyGameState)
   const [elapsedTime, setElapsedTime] = useState('00:00:00')
@@ -254,12 +253,12 @@ export const useMinesweeperGame = () => {
       return
     }
 
-    if (event.button === 2) {
+    if (event.button === BUTTON_RIGHT) {
       setState(state => toggleFlag(state, rowIndex, columnIndex))
       return
     }
 
-    if (event.button === 0) {
+    if (event.button === BUTTON_LEFT) {
       setState(state => revealCell(state, rowIndex, columnIndex))
       return
     }
@@ -272,29 +271,33 @@ export const useMinesweeperGame = () => {
   const mapRows = (mapFn: (row: RowHandle) => JSX.Element) => {
     return state.cells.map((row, rowIndex) => {
       const rowHandle: RowHandle = {
+        rowIndex,
         mapCells: (mapFn) => {
-          return row.map((cell, index) => {
+          return row.map((cell, columnIndex) => {
             const cellHandle: CellHandle = {
               cell,
+              rowIndex,
+              columnIndex,
               cellProps: {
-                onMouseUp: onMouseUp(rowIndex, index),
+                onMouseUp: onMouseUp(rowIndex, columnIndex),
                 onContextMenu,
               },
-              rowIndex: index,
-              columnIndex: index,
             }
 
             return mapFn(cellHandle)
           })
         },
-        rowIndex: rowIndex,
       }
 
       return mapFn(rowHandle)
     })
   }
 
-  const create = useCallback((options: GameOptions) => setState(() => createGameState(options.width, options.height, options.mineCount)), [])
+  const create = useCallback((options: GameOptions) => {
+    if (areGameOptionsValid(options)) {
+      setState(() => createGameState(options.width, options.height, options.mineCount))
+    }
+  }, [])
   const reset = useCallback(() => setState(() => createGameState(state.width, state.height, state.mineCount)), [state.width, state.height, state.mineCount])
 
   return {
